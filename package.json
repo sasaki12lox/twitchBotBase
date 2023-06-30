@@ -1,0 +1,11 @@
+{
+  "name": "twitchbotbase",
+  "version": "0.0.1",
+  "description": "my base for twitch bots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "romainstant1",
+  "license": "ISC"
+}
