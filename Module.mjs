@@ -19,7 +19,7 @@
  * @typedef {{
  *      messageBehavor?: 'active' | null
  *      messageBehavorCallback?: messageBehavorCallback
- *      methods?: Function[]
+ *      methods?: {[name: string]: Function}
  *      name: string
  *      prepared?: prepared
  *      updateInInterval?: boolean
