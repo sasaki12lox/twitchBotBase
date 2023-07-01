@@ -1,11 +1,14 @@
 {
   "name": "twitchbotbase",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "my base for twitch bots",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "romainstant1",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "tmi.js": "^1.8.5"
+  }
 }
