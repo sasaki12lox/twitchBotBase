@@ -1,18 +1,15 @@
-//@ts-check
+/**
+ * @typedef {{
+ *      ahaha: {
+ *          'NYOOO': (a: string) => string
+ *      }
+ * }} SharedMethods
+ */
 
-import { Bot } from './Bot.mjs';
+import { Bot } from "./Bot.mjs";
 
-const modules = [
-   
-]
 
 const bot = new Bot({
-    channels: [],
-    identity: {
-        password: '',
-        username: ''
-    }
+
 });
 
-
-bot.connect(modules);

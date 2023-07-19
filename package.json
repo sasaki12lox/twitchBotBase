@@ -1,14 +1,45 @@
 {
+  "devDependencies": {
+    "jsdoc": "^4.0.2"
+  },
   "name": "twitchbotbase",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "my base for twitch bots",
   "main": "index.mjs",
+  "dependencies": {
+    "argparse": "^2.0.1",
+    "bluebird": "^3.7.2",
+    "catharsis": "^0.9.0",
+    "entities": "^2.1.0",
+    "escape-string-regexp": "^2.0.0",
+    "graceful-fs": "^4.2.11",
+    "js2xmlparser": "^4.0.2",
+    "klaw": "^3.0.0",
+    "linkify-it": "^3.0.3",
+    "lodash": "^4.17.21",
+    "markdown-it": "^12.3.2",
+    "markdown-it-anchor": "^8.6.7",
+    "marked": "^4.3.0",
+    "mdurl": "^1.0.1",
+    "mkdirp": "^1.0.4",
+    "requizzle": "^0.2.4",
+    "strip-json-comments": "^3.1.1",
+    "tmi.js": "^1.8.5",
+    "uc.micro": "^1.0.6",
+    "underscore": "^1.13.6",
+    "xmlcreate": "^2.0.4"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sasaki12lox/twitchBotBase.git"
+  },
   "author": "romainstant1",
   "license": "ISC",
-  "dependencies": {
-    "tmi.js": "^1.8.5"
-  }
+  "bugs": {
+    "url": "https://github.com/sasaki12lox/twitchBotBase/issues"
+  },
+  "homepage": "https://github.com/sasaki12lox/twitchBotBase#readme"
 }
