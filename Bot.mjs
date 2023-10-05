@@ -28,9 +28,6 @@ export class Bot {
     /**@type {import('./types').SharedMethods} */
     modulesMethods = {};
 
-    /**@type {{[name: string]: any}} */
-    sharedContext = {};
-
     /**@type {import('./types').MessageBehavorModule[]} */
     messageBehavorModules = [];
 
@@ -68,7 +65,7 @@ export class Bot {
      */
     async loadModules(modules) {
         if (!modules[0]) return;
-        let {next, remove} = loadAnimation(modules[0].name);
+        let {next, remove} = loadAnimation('bot', modules[0].name);
         let start = performance.now();
 
         for (let module of modules) {
@@ -77,7 +74,7 @@ export class Bot {
         }
 
         remove();
-        console.log(`\x1b[36mbot   |\x1b[0m All modules prepared in ${performance.now() - start}ms`);
+        console.log(`\x1b[36mbot       |\x1b[0m All modules prepared in ${performance.now() - start}ms`);
     }
 
     /**
@@ -89,26 +86,29 @@ export class Bot {
 
         if (module.dependencies) {
             for (let dependence of module.dependencies) 
-                if (!this.loadedModules.includes(dependence)) throw new Error(`\x1b[36mbot   |\x1b[0m Module has depentencies, but loaded modules doesn't have it depentence (${dependence})`);
+                if (!this.loadedModules.includes(dependence)) throw new Error(`\x1b[36mbot       |\x1b[0m Module has depentencies, but loaded modules doesn't have it depentence (${dependence})`);
         }
 
         if (module.requiredVariables) {
             for (let requiredVariable in module.requiredVariables) {
-                if (!this.variables[requiredVariable]) throw new Error(`\x1b[36mbot   |\x1b[0m Module has required variable (${requiredVariable}), but bot doesn't have it.`);
+                if (!this.variables[requiredVariable]) throw new Error(`\x1b[36mbot       |\x1b[0m Module has required variable (${requiredVariable}), but bot doesn't have it.`);
 
                 if (Array.isArray(this.variables[requiredVariable])) {
-                    if (module.requiredVariables[requiredVariable][1] != '.') throw new Error(`\x1b[36mbot   |\x1b[0m Module variable (${requiredVariable}) type is not an array, but gived variable is array.`);
+                    if (module.requiredVariables[requiredVariable][1] != '.') throw new Error(`\x1b[36mbot       |\x1b[0m Module variable (${requiredVariable}) type is not an array, but gived variable is array.`);
                     //@ts-expect-error
                     if (this.variables[requiredVariable].length)
                         //@ts-expect-error
                         checkArrayTypes(this.variables[requiredVariable], module.requiredVariables[requiredVariable], requiredVariable);
                 //@ts-expect-error
                 } else checkTypes(this.variables[requiredVariable], module.requiredVariables[requiredVariable], requiredVariable);
+
+                if (module.requiredVariables[requiredVariable][1] == '.' && !Array.isArray(this.variables[requiredVariable])) 
+                    throw new Error(`\x1b[36mbot       |\x1b[0m Module variable (${requiredVariable}) is array, but gived variable is not array.`);
             }
             module.variables = this.variables;
         }
 
-        if (module.prepared) await module.prepared(this.sharedContext, this.modulesMethods, this.client);
+        if (module.prepared) await module.prepared(this.modulesMethods, this.client);
 
         if ('messageBehavor' in module) {
             if (module.messageBehavor == 'active') {
@@ -148,7 +148,7 @@ export class Bot {
      */
     async callMassageBehavorModules(channel, tags, msg, self) {
         for (let module of this.messageBehavorModules) {
-            module.messageBehavorCallback(channel, tags, msg, self, this.client, this.sharedContext, this.modulesMethods);
+            module.messageBehavorCallback(channel, tags, msg, self, this.client, this.modulesMethods);
         }
     }
 }
@@ -168,7 +168,7 @@ const shortTypes = {
 function checkArrayTypes(variable, type, vname) {
     let short2type = shortTypes[type[0]];
 
-    variable.map((e, i) => {if (typeof e != short2type) throw new Error(`\x1b[36mbot   |\x1b[0m Module variable (${vname}) is type ${short2type}[], but gived variable array contains other type at position (${i}).`)});
+    variable.forEach((e, i) => {if (typeof e != short2type) throw new Error(`\x1b[36mbot   |\x1b[0m Module variable (${vname}) is type ${short2type}[], but gived variable array contains other type at position (${i}).`)});
 }
 
 /**
@@ -186,26 +186,43 @@ function checkTypes(variable, type, vname) {
 /**
  * 
  * @param {String} name 
+ * @param {string} title
  * @returns {{
- *      remove: () => void
- *      next: (name: string) => void
- * }}
- */
-function loadAnimation(name) {
-    const frames = '⠤⠧⠇⠏⠉⠹⠸⠼';
+*      remove: () => void
+*      next: (name: string) => void
+* }}
+*/
+function loadAnimation(title,name) {
+    const frames = '⠤⠦⠧⠇⠏⠋⠉⠙⠹⠸⠼⠴';
+    const stickLen = 10;
     let i = 0;
-    process.stdout.columns
+    let start = Date.now();
+    process.stdout.columns;
+
+    if (title.length < stickLen)
+        title += ((new Array(stickLen - title.length)).fill(' ').join('')) + '|';
 
     let interval = setInterval(() => {
-        let str = `\x1b[36mbot   |\x1b[0m Preparing module \x1b[32m${frames[i++%frames.length]} \x1b[34m${name}\x1b[0m`;
-        str += ' '.repeat(process.stdout.columns - str.length);
+        let str = `\x1b[36m${title} \x1b[32m${frames[i++%frames.length]} \x1b[34m${name}\x1b[0m`;
+        let rawStr = `${title} ${frames[i++%frames.length]} ${name}`;
+        const time = '\x1b[36m' + ((Date.now()-start)/1000).toFixed(1) + 's\x1b[0m';
+        let rawTime = ((Date.now()-start)/1000).toFixed(1);
+        str += ' '.repeat(process.stdout.columns - rawStr.length - rawTime.length - 1) + time;
         process.stdout.write(`\n${str}\n`);
         process.stdout.moveCursor(0, -2);
     }, 50);
 
-    return {remove: () => {
-        clearInterval(interval);
-        console.log((' '.repeat(process.stdout.columns) + '\n').repeat(3));
-        process.stdout.moveCursor(0, -4);
-    }, next: (e) => {name = e}};
+    return {
+        remove: () => {
+            clearInterval(interval);
+            for (let i = 0; i < 2; i++) {
+                process.stdout.clearLine(0);
+                process.stdout.moveCursor(0, 1);
+            }
+            process.stdout.moveCursor(0, -2);
+        }, next: (e) => {
+            name = e;
+            start = Date.now();
+        }
+    };
 }

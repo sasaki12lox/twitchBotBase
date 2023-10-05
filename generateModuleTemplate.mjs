@@ -34,7 +34,7 @@ const template = `
 export default {
     name: '${name}',
     requiredVariables: ${JSON.stringify(variables)},
-    prepared(ctx, mm, client) {
+    prepared(mm, client) {
         
     }
 }

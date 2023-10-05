@@ -19,7 +19,6 @@ interface ModuleBase<M extends Methods, D, T extends SharedMethods> {
     name: string
     description?: string
     prepared?: (
-        sharedContext: {[name: string]: any},
         moduleMethods: T,
         client: import('tmi.js').Client
     ) => any
@@ -37,7 +36,6 @@ interface MessageBehavorModule<T extends SharedMethods, M extends Methods, D> ex
         msg: string,
         self: boolean,
         client: import('tmi.js').Client,
-        sharedContext: {[moduleName: string]: any},
         moduleMethods: T
     ) => any
 }

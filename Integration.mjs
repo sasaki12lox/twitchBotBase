@@ -1,11 +1,17 @@
+/**
+ * @callback StartBot
+ * @returns {Promise<import('./Bot.mjs').Bot>}
+ * 
+ */
+
 export default class Integration {
     
     
     /**
      * 
-     * @param {import('./Bot.mjs').Bot} bot 
+     * @param {StartBot} startFunction 
      */
-    constructor(bot) {
+    constructor(startFunction) {
 
     }
 }

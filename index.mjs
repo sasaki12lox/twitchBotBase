@@ -18,15 +18,15 @@ const modules = [Core, Commands];
 
     await mongo.connect();
 
-    /**@type {import('./Bot.mjs').BotOptions | null} */
-    //@ts-expect-error
-    const settings = await mongo.db('bot_settings').collection('settings').findOne({name: botName});
+    /**@type {import('mongodb').Collection<import('./Bot.mjs').BotOptions>} */
+    const settingsCollection = await mongo.db('bot_settings').collection('settings');
+    const settings = await settingsCollection.findOne({name: botName});
 
     if (!settings) {
         throw new Error(`Cannot find setting for ${botName}`);
     }
 
-    console.log(`\x1b[36mindex |\x1b[0m Settings for ${botName} loaded, preparing modules`);
+    console.log(`\x1b[36mindex     |\x1b[0m Settings for ${botName} loaded, preparing modules`);
 
     mongo.close();
 
@@ -34,11 +34,9 @@ const modules = [Core, Commands];
 
     await bot.loadModules(modules);
     
-    console.log(`\x1b[36mindex |\x1b[0m Connecting`);
+    console.log(`\x1b[36mindex     |\x1b[0m Connecting`);
 
     await bot.connect();
 
     console.log(`\x1b[36mindex |\x1b[0m Connected to twitch (channels: ${settings.settings.channels.join(' ')}) as ${settings.settings.username}`);
-
-    const cli = new Integration(bot);
 })()

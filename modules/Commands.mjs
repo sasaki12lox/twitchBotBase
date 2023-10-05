@@ -13,8 +13,9 @@ export default {
     requiredVariables: {
         "privileged_users":"s."
     },
-    prepared(ctx, mm, client) {
+    async prepared(mm, client) {
         mongo = mm['core'].getMongo().db('GBot').collection('commands');
+        await new Promise(ok => setTimeout(ok, 5000));
     },
     messageBehavor: 'active',
     async messageBehavorCallback(channel, tags, msg, self, client, ctx, mm) {
