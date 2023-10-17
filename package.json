@@ -5,10 +5,11 @@
     "jsdoc": "^4.0.2"
   },
   "name": "twitchbotbase",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "my base for twitch bots",
   "main": "index.mjs",
   "dependencies": {
+    "@types/websocket": "^1.0.7",
     "argparse": "^2.0.1",
     "bluebird": "^3.7.2",
     "catharsis": "^0.9.0",

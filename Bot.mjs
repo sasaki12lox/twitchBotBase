@@ -1,4 +1,5 @@
 import { Client } from 'tmi.js';
+import { loadAnimation } from './loadAnimation.mjs';
 
 /**
  * @typedef {{
@@ -66,15 +67,17 @@ export class Bot {
     async loadModules(modules) {
         if (!modules[0]) return;
         let {next, remove} = loadAnimation('bot', modules[0].name);
+        let once = true;
         let start = performance.now();
 
         for (let module of modules) {
-            next(module.name);
+            if (!once) next(module.name);
             await this.loadModule(module);
+            if (once) once = false;
         }
 
         remove();
-        console.log(`\x1b[36mbot       |\x1b[0m All modules prepared in ${performance.now() - start}ms`);
+        console.log(`\x1b[36mbot       |\x1b[0m All modules prepared in ${((performance.now() - start)/1000).toFixed(2)}s`);
     }
 
     /**
@@ -181,48 +184,4 @@ function checkTypes(variable, type, vname) {
     let short2type = shortTypes[type[0]];
 
     if (typeof variable != short2type) throw new Error(`\x1b[36mbot   |\x1b[0m Module variable (${vname}) is type ${short2type}, but gived variable is other tpye.`);
-}
-
-/**
- * 
- * @param {String} name 
- * @param {string} title
- * @returns {{
-*      remove: () => void
-*      next: (name: string) => void
-* }}
-*/
-function loadAnimation(title,name) {
-    const frames = '⠤⠦⠧⠇⠏⠋⠉⠙⠹⠸⠼⠴';
-    const stickLen = 10;
-    let i = 0;
-    let start = Date.now();
-    process.stdout.columns;
-
-    if (title.length < stickLen)
-        title += ((new Array(stickLen - title.length)).fill(' ').join('')) + '|';
-
-    let interval = setInterval(() => {
-        let str = `\x1b[36m${title} \x1b[32m${frames[i++%frames.length]} \x1b[34m${name}\x1b[0m`;
-        let rawStr = `${title} ${frames[i++%frames.length]} ${name}`;
-        const time = '\x1b[36m' + ((Date.now()-start)/1000).toFixed(1) + 's\x1b[0m';
-        let rawTime = ((Date.now()-start)/1000).toFixed(1);
-        str += ' '.repeat(process.stdout.columns - rawStr.length - rawTime.length - 1) + time;
-        process.stdout.write(`\n${str}\n`);
-        process.stdout.moveCursor(0, -2);
-    }, 50);
-
-    return {
-        remove: () => {
-            clearInterval(interval);
-            for (let i = 0; i < 2; i++) {
-                process.stdout.clearLine(0);
-                process.stdout.moveCursor(0, 1);
-            }
-            process.stdout.moveCursor(0, -2);
-        }, next: (e) => {
-            name = e;
-            start = Date.now();
-        }
-    };
 }

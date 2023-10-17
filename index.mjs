@@ -38,5 +38,5 @@ const modules = [Core, Commands];
 
     await bot.connect();
 
-    console.log(`\x1b[36mindex |\x1b[0m Connected to twitch (channels: ${settings.settings.channels.join(' ')}) as ${settings.settings.username}`);
+    console.log(`\x1b[36mindex     |\x1b[0m Connected to twitch (channels: ${settings.settings.channels.join(' ')}) as ${settings.settings.username}`);
 })()
