@@ -9,7 +9,7 @@
 */
 export function loadAnimation(title,name) {
     const frames = '⠤⠦⠧⠇⠏⠋⠉⠙⠹⠸⠼⠴';
-    const stickLen = 10;
+    const stickLen = 14;
     let i = 0;
     let start = Date.now();
     /**@type {{date: number, name: string}} */
