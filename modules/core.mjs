@@ -16,7 +16,7 @@ export default {
     async prepared() {
         await client.connect();
 
-        await new Promise(ok => setTimeout(ok, 5000));
+        await new Promise(ok => setTimeout(ok, 5));
     },
     methods: {
         getMongo() {

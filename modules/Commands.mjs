@@ -15,10 +15,10 @@ export default {
     },
     async prepared(mm, client) {
         mongo = mm['core'].getMongo().db('GBot').collection('commands');
-        await new Promise(ok => setTimeout(ok, 5000));
+        await new Promise(ok => setTimeout(ok, 1));
     },
     messageBehavor: 'active',
     async messageBehavorCallback(channel, tags, msg, self, client, ctx, mm) {
-        if (msg.startsWith('!pivo')) client.say(channel, '1234');
+        if (msg.startsWith('!pivo')) client.say(channel, '12314');
     }
 }

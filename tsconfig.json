@@ -5,7 +5,8 @@
         "target": "ES2020",
         "moduleResolution": "node",
         "module": "ES2022",
-        "outDir": "build"
+        "outDir": "build",
+        "allowSyntheticDefaultImports": true
     },
     "exclude": ["node_modules", "build/**/*"]
 }
