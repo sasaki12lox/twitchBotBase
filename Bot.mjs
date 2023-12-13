@@ -1,5 +1,6 @@
 import { Client } from 'tmi.js';
 import { loadAnimation } from './loadAnimation.mjs';
+import { AsyncEventEmitter } from './async-event-emitter/index.mjs';
 
 /**
  * @typedef {{
@@ -19,7 +20,7 @@ import { loadAnimation } from './loadAnimation.mjs';
  * }} GeneralSettings
  */
 
-export class Bot {
+export class Bot extends AsyncEventEmitter {
     /**@type {import('tmi.js').Client | null} */
     client = null;
 
@@ -43,11 +44,17 @@ export class Bot {
      * @param {BotOptions} opts 
      */
     constructor(opts) {
+        super();
         this.client = new Client({
             channels: opts.settings.channels,
             identity: {
                 password: opts.settings.token,
                 username: opts.settings.username
+            },
+            logger: {
+                error: () => {},
+                info: () => {},
+                warn: () => {}
             }
         })
         this.settings = opts.settings;
@@ -77,7 +84,7 @@ export class Bot {
         }
 
         remove();
-        console.log(`\x1b[36mbot       |\x1b[0m All modules prepared in ${((performance.now() - start)/1000).toFixed(2)}s`);
+        console.log(`\x1b[36mbot           |\x1b[0m All modules prepared in ${((performance.now() - start)/1000).toFixed(2)}s`);
     }
 
     /**
@@ -151,7 +158,11 @@ export class Bot {
      */
     async callMassageBehavorModules(channel, tags, msg, self) {
         for (let module of this.messageBehavorModules) {
-            module.messageBehavorCallback(channel, tags, msg, self, this.client, this.modulesMethods);
+            try {
+                await module.messageBehavorCallback(channel, tags, msg, self, this.client, this.modulesMethods);
+            } catch (error) {
+                this.emit('error', error);
+            }
         }
     }
 }
