@@ -91,8 +91,8 @@ export default class Integration {
             this.bot.on('error', (error) => {
                 this.#errorLog(`Bot error: ${error}`);
             });
-            this.startTime = Date.now();
-            setInterval(this.sendStat.bind(this), 60000);
+            // this.startTime = Date.now();
+            // setInterval(this.sendStat.bind(this), 60000);
         } catch (error) {
             this.badStartsCount++;
             this.#errorLog(`Bot error: ${error}`);
@@ -132,6 +132,7 @@ export default class Integration {
 
         this.#log('Connected successfully');
 
+        /**@type {import('mongodb').Collection<import('./Bot.mjs').BotOptions>} */
         this.botSettingsCollection = mongo.db('bot_settings').collection('settings');
 
         this.wsClient.on('error', (error) => {
@@ -168,6 +169,10 @@ export default class Integration {
         });
 
         this.#log('Connecting to integration server');
-        await this.wsClient.connect();
+        try {
+            await this.wsClient.connect();
+        } catch (error) {
+            this.wsClient.emit('error', error);
+        }
     }
 }

@@ -122,6 +122,12 @@ export class BotClient extends AsyncEventEmitter {
         this.ws.on('message', this.handleMessage.bind(this));
 
         this.ws.on('open', this.#authorize.bind(this));
+
+        this.ws.on('error', this.#handleError.bind(this));
+    }
+
+    #handleError(error) {
+        this.emit('error', 'Something went wrong...');
     }
 
     async #authorize() {
